@@ -1,0 +1,21 @@
+{% extends 'FOSUserBundle:Default:layout.html.twig' %}
+{% block title %}LOGIN{% endblock %}
+
+{% block content %}
+    <h3 class="center title">.LOGIN.</h3></a>
+	{% for message in app.flashes('message_success') %}
+       <p>{{message}}</p>
+    {% endfor %}	
+
+    <form action="{{ path('login') }}" method="post" class="login">
+        <div class="login-form ">
+			<label for="login" class="login-field">Username:</label>
+			<input type="text" id="login" name="_login" class="login-field"/>
+
+			<label for="password" class="login-field">Password:</label>
+			<input type="password" id="password" name="_password" class="login-field"/>
+			{# <input type="hidden" name="failure_path" value="{{ path('failure_register') }}" /> #}
+			<button type="submit" class="btn">Login</button>
+	    </div>
+	</form> 
+{% endblock %}

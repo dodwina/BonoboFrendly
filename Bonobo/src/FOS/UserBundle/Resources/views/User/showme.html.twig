@@ -1,0 +1,35 @@
+{% extends 'FOSUserBundle:Default:layout.html.twig' %}
+{% block title %} MY PROFIL {% endblock %}
+
+{% block content %}
+    
+
+
+
+
+	<div class="uk-modal-header">
+		<h3 class ='center'>.MY PROFIL.</h3>	
+	</div>
+	<div class="uk-modal-header">	
+	    <h4>My informations</h4>
+		{% for message in app.flashes('message_success') %}
+	        <p>{{message}}</p>
+	    {% endfor %}	
+	
+
+		{% if form  is defined and not false %}
+			<div class=" ">
+				<div class="">
+				    {{ form_start(form, {'attr': {'class': 'form'}})}}
+			        {{ form_rest(form) }}
+					{{ form_end(form) }}
+		        </div>
+			</div>
+		{% endif %}
+
+		<a href=" {{ path('user_update, id: app.user.id ') }}"> EDIT MY PROFIL</a>
+	</div>	
+
+   
+
+{% endblock %}

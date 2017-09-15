@@ -1,0 +1,24 @@
+{% extends 'FOSUserBundle:Default:layout.html.twig' %}
+{% block title %} MY PROFIL {% endblock %}
+
+{% block content %}
+    <div class="uk-modal-header">
+	    <h3 class="uk-modal-title">.MY PROFIL.</h3>
+	</div>
+    <div class="uk-modal-header">
+	
+	    <h4>Edit my profil</h4>
+		{% for message in app.flashes('message_success') %}
+	        <p>{{message}}</p>
+	    {% endfor %}	
+		{% if form  is defined and not false %}
+			<div class="well">
+				<div class="form-group">
+				    {{ form_start(form, {'attr': {'class': 'form-horizontal'}})}}
+			        {{ form_rest(form) }}
+					{{ form_end(form) }}
+		        </div>
+			</div>
+		{% endif %}
+	</div>
+{% endblock %}

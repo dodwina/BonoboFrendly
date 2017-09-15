@@ -1,0 +1,48 @@
+fos_user_homepage:
+    path:     /
+    defaults: { _controller: FOSUserBundle:User:index }
+
+fos_user_index:
+    path:     /index
+    defaults: { _controller: FOSUserBundle:User:index }
+
+register:
+    path:     /register
+    defaults: { _controller: FOSUserBundle:User:register }
+
+login:
+    path:     /login
+    defaults: { _controller: FOSUserBundle:User:login }
+
+logout:
+    path:     /logout
+
+user_showme:
+    path:     /user/showme
+    defaults: { _controller: FOSUserBundle:User:showme }
+
+
+user_update:
+    path:     /user/{id}/update
+    defaults: { _controller: FOSUserBundle:User:update }
+    requirements:
+        type: "[A-Za-z0-9_]+"
+        id: "[0-9]*"
+
+user_list:
+    path:     /user/list
+    defaults: { _controller: FOSUserBundle:User:list }
+
+user_add:
+    path:     /user/{id}/add
+    defaults: { _controller: FOSUserBundle:User:add }
+    requirements:
+        type: "[A-Za-z0-9_]+"
+        id: "[0-9]*"
+        
+user_delete:
+    path:     /user/{id}/delete
+    defaults: { _controller: FOSUserBundle:User:delete }
+    requirements:
+        type: "[A-Za-z0-9_]+"
+        id: "[0-9]*" 

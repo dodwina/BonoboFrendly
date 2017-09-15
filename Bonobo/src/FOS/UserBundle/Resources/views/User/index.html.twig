@@ -1,0 +1,11 @@
+{% extends 'FOSUserBundle:Default:layout.html.twig' %}
+
+{% block title %}HOME{% endblock %}
+
+{% block content %}
+   {% if app.user and not null %}
+   <h1 class="center">Welcome  {{ app.user.login }} !</h1>
+   {% else %}
+   <h1 class="center">Welcome Dear Bonobo !</h1>
+   {%endif %}
+{% endblock %}
