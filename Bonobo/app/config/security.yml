@@ -4,10 +4,17 @@ security:
 
     # https://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
     providers:
-         db_provider:
+        db_provider:
             entity:
                 class: FOSUserBundle:User
-                property: login
+                property: username
+
+    role_hierarchy:
+        ROLE_SUPERADMIN: [ROLE_USER, ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
+        ROLE_ADMIN:     ROLE_ADMIN
+        ROLE_BLOGGER:   ROLE_BLOGGER
+        ROLE_USER:      ROLE_USER
+
 
     encoders:
         FOS\UserBundle\Entity\User:
@@ -19,6 +26,7 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+
 
         main:
             pattern: ^/
@@ -32,14 +40,14 @@ security:
                 check_path: login
                 default_target_path: /index
                 failure_path: ~
+                #username_parameter: _username
             logout:
                 path: /logout
                 target: /
 
-                
-
     access_control:
         - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY}
 
     

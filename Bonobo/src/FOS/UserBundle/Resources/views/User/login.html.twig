@@ -1,21 +1,27 @@
-{% extends 'FOSUserBundle:Default:layout.html.twig' %}
+{% extends '::base.html.twig' %}
 {% block title %}LOGIN{% endblock %}
 
-{% block content %}
-    <h3 class="center title">.LOGIN.</h3></a>
+{% block FOSUserBundle_content %}
+	{% if errors %}
+		<div class="alert alert-danger">
+			{{ errors }}
+		</div>
+    {% endif %}
+    <h3 class="center title">.LOGIN.</h3>
 	{% for message in app.flashes('message_success') %}
-       <p>{{message}}</p>
+        <p>{{ message }}</p>
     {% endfor %}	
 
     <form action="{{ path('login') }}" method="post" class="login">
         <div class="login-form ">
-			<label for="login" class="login-field">Username:</label>
-			<input type="text" id="login" name="_login" class="login-field"/>
-
+			<label for="username" class="login-field">Username:</label>
+			<input type="text" id="username" name="_username" class="login-field"/>
 			<label for="password" class="login-field">Password:</label>
 			<input type="password" id="password" name="_password" class="login-field"/>
-			{# <input type="hidden" name="failure_path" value="{{ path('failure_register') }}" /> #}
+
+			<input type="hidden" name="_csrf_token" value="{{ csrf_token('authentificate') }}">
+			{#<input type="hidden" name="failure_path" value="{{ path('failure_register') }}" >#}
 			<button type="submit" class="btn">Login</button>
 	    </div>
-	</form> 
-{% endblock %}
+	</form>
+{% endblock FOSUserBundle_content %}

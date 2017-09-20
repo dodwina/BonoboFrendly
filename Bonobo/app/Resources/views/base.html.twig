@@ -11,7 +11,23 @@
         {% endstylesheets %}
     </head>
     <body>
-        {% block body %}{% endblock %}
+        {% block body %}
+
+                <!-- header
+            ================================================== -->  
+                {% include('FOSUserBundle:Default:header.html.twig') %}
+
+                <!-- content
+            ================================================== -->    
+                {% block FOSUserBundle_content %}{% endblock %}
+
+                <!-- footer
+            ================================================== -->
+                {% include('FOSUserBundle:Default:footer.html.twig') %}
+                <!-- 
+            ================================================== -->
+
+        {% endblock %}
         {% block javascripts %}{% endblock %}
     </body>
 </html>

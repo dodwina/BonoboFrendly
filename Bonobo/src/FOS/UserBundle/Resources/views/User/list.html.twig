@@ -1,8 +1,9 @@
-{% extends 'FOSUserBundle:Default:layout.html.twig' %}
+{% extends '::base.html.twig' %}
 {% block title %} LIST{% endblock %}
-{% block content %}
+
+{% block FOSUserBundle_content %}
     <h1 class="center title ">THE BONOBOS FRIENDLY</h1>
-   
+
     <table class="table table-hover table-responsive ">
         <thead>
             <tr>
@@ -14,22 +15,21 @@
             </tr>
         </thead>
         <tbody>
-        {% for user in users %}  
+        {% for user in users %}
             <tr>
-               <td>{{ user.login }}</td>
-                <td>{{ user.age }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.calculateAge }}</td>
                 <td>{{ user.family }}</td>
                 <td>{{ user.race }}</td>
-                <td>{{ user.foods }}</td>              
+                <td>{{ user.foods }}</td>
                 <td>
                     <ul class="">
+
                         <li>
-                            <button type="submit" class=" btn-sm"><a href="{{ path('user_add', { 'id': user.id }) }}" method="" data-confirmation="true">ADD THIS BONOBO</a> </button>
-                        </li>
-                        <li>
-                            <button type="submit" class="btn-danger btn-sm" data-confirmation ="true">DELETE THIS BONOBO</button>
-                           
+                            <a href="{{ path('user_delete', { 'id': user.id } ) }}" ><button type="submit" class="btn-danger btn-sm" data-confirmation ="true">DELETE THIS FRIEND</button></a>
+
                     	</li>
+
                     </ul>
                 </td>
             </tr>
@@ -39,7 +39,7 @@
 
     <ul>
         <li>
-            <a href="{{ path('fos_user_index') }}" class="btn btn-sm">HOME</a>
+            <a href="{{ path('fos_user_index') }}" class="btn btn-sm">HOME </a>
         </li>
     </ul>
-{% endblock %}
+{% endblock FOSUserBundle_content %}

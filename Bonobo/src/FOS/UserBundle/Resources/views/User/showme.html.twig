@@ -1,35 +1,36 @@
-{% extends 'FOSUserBundle:Default:layout.html.twig' %}
+{% extends '::base.html.twig' %}
 {% block title %} MY PROFIL {% endblock %}
 
-{% block content %}
-    
-
-
-
-
-	<div class="uk-modal-header">
+{% block FOSUserBundle_content %}
+    <div class="uk-modal-header">
 		<h3 class ='center'>.MY PROFIL.</h3>	
 	</div>
 	<div class="uk-modal-header">	
-	    <h4>My informations</h4>
-		{% for message in app.flashes('message_success') %}
-	        <p>{{message}}</p>
-	    {% endfor %}	
-	
 
-		{% if form  is defined and not false %}
-			<div class=" ">
-				<div class="">
-				    {{ form_start(form, {'attr': {'class': 'form'}})}}
-			        {{ form_rest(form) }}
-					{{ form_end(form) }}
-		        </div>
+		{% if form  is defined %}
+
+			<div id="content" class="center">
+				<h4 class="">My informations:</h4>
+				<p>{{ ' My username' }}: {{ user.username }}</p>
+                <p>{{  'My age' }}: {{ user.age|date("m/d/Y")  }} </p>
+				<p>{{  'My family' }}: {{ user.family }}</p>
+				<p>{{  'My race' }}: {{ user.race }}</p>
+				<p>{{  'My foods' }}: {{ user.foods }}</p>
 			</div>
+        {% endif %}
+        {% if form is not defined %}
+			<h4>Edit my informations {{ " are already update" }}</h4>
+        {% else %}
+
+			<div id="content" class="center">
+				<h4 class="">Edit my informations: </h4>
+				<!--change l'action du form-->
+                {{ form_start(form)}}
+                {{ form_widget(form) }}
+				{{ form_end(form) }}
+			</div>
+
 		{% endif %}
+    </div>
 
-		<a href=" {{ path('user_update, id: app.user.id ') }}"> EDIT MY PROFIL</a>
-	</div>	
-
-   
-
-{% endblock %}
+{% endblock FOSUserBundle_content %}

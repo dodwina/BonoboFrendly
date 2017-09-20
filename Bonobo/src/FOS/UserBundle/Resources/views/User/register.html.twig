@@ -1,16 +1,15 @@
-{% extends 'FOSUserBundle:Default:layout.html.twig' %}
+{% extends '::base.html.twig' %}
 {% block title %}REGISTER{% endblock %}
 
-{% block content %}
+{% block FOSUserBundle_content %}
 	<h3 class="center title">.REGISTER.</h3>
 	<div class="register">
 		<div class=" register-screen">
-
 			{{ form_start(form, {'attr': {'class': 'register-form'}}) }}
-				    
 			{{ form_rest(form) }}
-		       
+			{{ form_row(form.family) }}
+			{{ form_row(form.race) }}
 			{{ form_end(form) }}
 	    </div>
 	</div>
-{% endblock %}
+{% endblock FOSUserBundle_content %}

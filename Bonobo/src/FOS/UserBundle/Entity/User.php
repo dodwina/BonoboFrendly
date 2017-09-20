@@ -3,36 +3,44 @@
 namespace FOS\UserBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-/* relation entre entities vis-à-vis d'une liste d'objets (many to many)*/
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+// relation entre entities vis-à-vis d'une liste d'objets (many to many)*/
 use Doctrine\Common\Collections\ArrayCollection;
-/* interface obligatoire pour gèrer la couche d'authentification de l'object user
- * a l'aide de methodes de classes communes a chaque projet*/
-use Symfony\Component\Security\Core\User\UserInterface;
-/* pr les champs uniques*/
+// pr les champs uniques*/
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+//interface obligatoire pour gèrer la couche d'authentification de l'object user
+ // a l'aide de methodes de classes communes a chaque projet*/
+use Symfony\Component\Security\Core\User\UserInterface;
 /* contraintes annotées pr valider les champs */
-use Symfony\Component\Validator\Constraints as Assert; 
+use Symfony\Component\Validator\Constraints\date;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Serializer;
+use Serializable;
 
 /**
  * User
  *
  * @ORM\Table(name="user")
  * @ORM\Entity(repositoryClass="FOS\UserBundle\Repository\UserRepository")
- * @UniqueEntity(fields={"login"}, message="This username is already taken")
+ * @UniqueEntity(fields={"username", "password"}, message="This username is already taken")
  */
-class User implements UserInterface {
+class User implements UserInterface, \Serializable {
     
     /**
-    * @ORM\ManyToMany(targetEntity="FOS\UserBundle\Entity\user", cascade={"persist"})
+    * @var User $friends
+    *
+     * @ORM\ManyToMany(targetEntity="FOS\UserBundle\Entity\User")
+    * @ORM\Column(name="friends", type="array", nullable=true)
+     *
     */
-    private $users; /* notre liste d'amis*/
+    private $friends =[]; /* notre liste d'amis*/
     
     public function __construct(){
-        //$this->roles = array('ROLE_USER');
+        $this->roles = array('ROLE_USER');
         //$this->setDateNaissance(new \DateTime('2016-01-01'));
-        $this->users = new ArrayCollection(); /*instanciation de notre liste d'amis*/
+        $this->friends = []; /*instanciation de notre liste d'amis*/
     }
-    
+
 
     /**
      * @var int
@@ -43,43 +51,52 @@ class User implements UserInterface {
      */
     private $id;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="login", type="string", length=255, unique=true)
-     * @Assert\Regex( pattern="^[A-Za-z]{2,50}$^", message = "Entrer un nom entre 2 et 50 caracteres."
-     * )
-     */
-    private $login;
 
     /**
      * @var string
-     * 
+     *
+     * @ORM\Column(name="username", type="string", length=255, unique=true)
+     * @Assert\Regex( pattern="^[A-Za-z]{2,50}$^", message = "Entrer un nom entre 2 et 50 caracteres."
+     * )
+     */
+    private $username;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="password", type="string", length=255, nullable=false, unique=true)
      */
    
     private $password;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="age", type="integer")
+     * @var date
+
+     * @ORM\Column(name="age", type="date")
      */
     private $age;
 
     /**
-     * @var string
+     * @var array
      *
-     * @ORM\Column(name="family", type="string", length=255, nullable=true)
+     * @ORM\Column(name="family", type="array")
      */
     private $family;
 
     /**
-     * @var string
+     * @var array
      *
-     * @ORM\Column(name="race", type="string", length=255, nullable=true)
+     * @ORM\Column(name="race", type="array")
      */
     private $race;
+
+
+    /**
+     * @var array
+     * @ORM\Column(name="roles", type="array" , nullable=true )
+     */
+    private $roles;
+
 
     /**
      * @var string
@@ -87,23 +104,6 @@ class User implements UserInterface {
      * @ORM\Column(name="foods", type="text", nullable=true)
      */
     private $foods;
-    
-
-
-    public function addUser(User $user){ 
-        //ajout d'ami ds ma liste d'amis définie sous forme d'un array
-        $this->users[] = $user;
-
-    return $this;
-    }
-
-    public function removeUser(User $user){
-        $this->users->removeElement($user);
-    }
-
-    public function getUsers(){
-    return $this->users;
-    }
 
 
     /**
@@ -117,27 +117,27 @@ class User implements UserInterface {
     }
 
     /**
-     * Set login
+     * Set user
      *
-     * @param string $login
+     * @param string $user
      *
      * @return User
      */
-    public function setLogin($login)
+    public function setUsername($Username)
     {
-        $this->login = $login;
+        $this->username = $Username;
 
         return $this;
     }
 
     /**
-     * Get login
+     * Get User
      *
      * @return string
      */
-    public function getLogin()
+    public function getUsername()
     {
-        return $this->login;
+        return $this->username;
     }
 
 
@@ -168,7 +168,7 @@ class User implements UserInterface {
     /**
      * Set age
      *
-     * @param integer $age
+     * @param date $age
      * 
      * @return User
      */
@@ -182,17 +182,21 @@ class User implements UserInterface {
     /**
      * Get age
      *
-     * @return datetime
+     * @return date
      */
     public function getAge()
     {
         return $this->age;
     }
 
+    public function calculateAge() {
+        $age = date_diff($this->getAge() , date_create('today'))->y;
+        return $age;
+    }
     /**
      * Set family
      *
-     * @param string $family
+     * @param array $family
      *
      * @return User
      */
@@ -206,7 +210,7 @@ class User implements UserInterface {
     /**
      * Get family
      *
-     * @return string
+     * @return array
      */
     public function getFamily()
     {
@@ -216,7 +220,7 @@ class User implements UserInterface {
     /**
      * Set race
      *
-     * @param string $race
+     * @param array $race
      *
      * @return User
      */
@@ -230,7 +234,7 @@ class User implements UserInterface {
     /**
      * Get race
      *
-     * @return string
+     * @return array
      */
     public function getRace()
     {
@@ -261,43 +265,95 @@ class User implements UserInterface {
         return $this->foods;
     }
 
-    /* 
-     * Get Salt 
-     * 
+    /**
+     * @param $roles
+     * @return $this
      */
-    public function getSalt(){
-        return NULL;
+    public function setRoles($roles)
+    {
+        $this->roles = $roles;
+
+        return $this;
     }
 
     /**
+     * Get roles
+     *
+     * @return array
+     */
+    public function getRoles()
+    {
+        return $this->roles;
+    }
+
+
+    public function setFriends($Friends)
+    {
+        $this->friends = $Friends;
+
+        return $this;
+    }
+    public function getFriends()
+    {
+        return $this->friends;
+    }
+
+
+    public function addfriend($friends){
+        //ajout d'ami ds ma liste d'amis définie sous forme d'un array
+        $this->friends[] = $friends;
+
+        return $this;
+    }
+
+    public function removefriend(User $friend){
+        $this->friends->removeElement($friend);
+    }
+
+
+    /**
      *methode attribuée à l'interface/ on ne l'utilise pas dans notre cas
-      
-    */
+     */
     public function eraseCredentials(){
 
     }
 
     /**
      *methode attribuée à l'interface/ on ne l'utilise pas dans notre cas
-     * Get Username
-     * 
-     * @return string
-     */
-    
-    public function getUsername(){
 
+     */
+
+    #public function getUsername(){}
+
+
+    /** @see \Serializable::serialize() */
+    public function serialize()
+    {
+        return serialize(array(
+            $this->id,
+            $this->username,
+            $this->password,
+
+        ));
     }
 
-    /**
-     *methode attribuée à l'interface/on ne l'utilise pas ici
-     * Get roles
-     *
-     * @return array
-     */
-    public function getRoles(){
+    /** @see \Serializable::unserialize() */
+    public function unserialize($serialized)
+    {
+        list (
+            $this->id,
+            $this->username,
+            $this->password,
 
+             ) = unserialize($serialized);
     }
 
-
+    /*
+    * Get Salt
+    * @return string|null the salt
+    */
+    public function getSalt(){
+        return NULL;
+    }
 }
 
